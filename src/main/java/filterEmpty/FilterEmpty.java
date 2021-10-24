@@ -2,9 +2,6 @@ package filterEmpty;
 
 import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveAction;
-
-import cse332.exceptions.NotYetImplementedException;
 
 public class FilterEmpty {
     static ForkJoinPool POOL = new ForkJoinPool();
@@ -14,7 +11,7 @@ public class FilterEmpty {
      *
      * Returns an array with the lengths of the non-empty strings from arr (in order)
      * For example, if arr is ["", "", "cse", "332", "", "hw", "", "7", "rox"], then
-     * filterEmpty(arr) == [3, 3, 2, 1, 3].
+     * main.java.filterEmpty(arr) == [3, 3, 2, 1, 3].
      *
      * A parallel algorithm to solve this problem in O(lg n) span and O(n) work is the following:
      * (1) Do a parallel map to produce a bit set
@@ -29,21 +26,25 @@ public class FilterEmpty {
      */
     public static int[] filterEmpty(String[] arr) {
         int[] bits = mapToBitSet(arr);
-        // System.out.println(java.util.Arrays.toString(bitset));
+
         int[] bitsum = ParallelPrefixSum.parallelPrefixSum(bits);
-        // System.out.println(java.util.Arrays.toString(bitsum));
-        int[] result = mapToOutput(arr, bits, bitsum);
-        return result;
+
+        return mapToOutput(arr, bits, bitsum);
     }
 
     public static int[] mapToBitSet(String[] arr) {
-        throw new NotYetImplementedException();
+        /* TODO: Edit this with your code */
+        throw new IllegalStateException();
     }
 
+    /* TODO: Add a sequential method and parallel task here */
 
     public static int[] mapToOutput(String[] input, int[] bits, int[] bitsum) {
-        throw new NotYetImplementedException();
+        /* TODO: Edit this with your code */
+        throw new IllegalStateException();
     }
+
+    /* TODO: Add a sequential method and parallel task here */
 
     private static void usage() {
         System.err.println("USAGE: FilterEmpty <String array>");

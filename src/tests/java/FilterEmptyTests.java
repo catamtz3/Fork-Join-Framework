@@ -1,4 +1,3 @@
-package tests.gitlab.filterEmpty;
 import filterEmpty.FilterEmpty;
 import org.junit.Test;
 
@@ -6,19 +5,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class FilterEmptyTests {
 
-    public static Random RANDOM = new Random(332134);
-
     public static final int NUM_SMALL = 250;
-    public static final int SMALL_SIZE  = 10;
-
+    public static final int SMALL_SIZE = 10;
     public static final int NUM_LARGE = 10;
-    public static final int LARGE_SIZE  = 100000;
-
+    public static final int LARGE_SIZE = 100000;
     public static final int MAX_STRING_LENGTH = 30;
+    public static Random RANDOM = new Random(332134);
 
     @Test(timeout = 15000)
     public void testSmall() {

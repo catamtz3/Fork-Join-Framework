@@ -1,10 +1,6 @@
 package longestSequence;
 
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
-import cse332.exceptions.NotYetImplementedException;
-
-public class LongestSequence {
+public class GetLongestSequence {
     /**
      * Use the ForkJoin framework to write the following method in Java.
      *
@@ -17,11 +13,14 @@ public class LongestSequence {
      * your return value, but this is not required.
      */
     public static int getLongestSequence(int val, int[] arr, int sequentialCutoff) {
-        throw new NotYetImplementedException();
+        /* TODO: Edit this with your code */
+        throw new IllegalStateException();
     }
 
+    /* TODO: Add a sequential method and parallel task here */
+
     private static void usage() {
-        System.err.println("USAGE: LongestSequence <number> <array> <sequential cutoff>");
+        System.err.println("USAGE: GetLongestSequence <number> <array> <sequential cutoff>");
         System.exit(2);
     }
 
@@ -35,7 +34,7 @@ public class LongestSequence {
 
         try {
             val = Integer.parseInt(args[0]);
-            String[] stringArr = args[1].replaceAll("\\s*",  "").split(",");
+            String[] stringArr = args[1].replaceAll("\\s*", "").split(",");
             arr = new int[stringArr.length];
             for (int i = 0; i < stringArr.length; i++) {
                 arr[i] = Integer.parseInt(stringArr[i]);

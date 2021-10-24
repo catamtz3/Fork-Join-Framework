@@ -1,24 +1,19 @@
-package tests.gitlab.longestSequence;
-import java.util.Random;
-
-import longestSequence.LongestSequence;
+import longestSequence.GetLongestSequence;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import java.util.Random;
 
-public class LongestSequenceTests {
-    public static Random RANDOM = new Random(332134);
+import static org.junit.Assert.assertEquals;
 
+public class GetLongestSequenceTests {
     public static final int FULLY_SEQUENTIAL = Integer.MAX_VALUE;
     public static final int REASONABLE_CUTOFF = 100;
     public static final int FULLY_PARALLEL = 1;
-
     public static final int NUM_SMALL_TESTS = 500;
     public static final int NUM_LARGE_TESTS = 5;
-
-
-    public static final int SMALL_SIZE  = 100;
-    public static final int LARGE_SIZE  = 100000;
+    public static final int SMALL_SIZE = 100;
+    public static final int LARGE_SIZE = 100000;
+    public static Random RANDOM = new Random(332134);
 
     @Test(timeout = 25000)
     public void testSmallSequential() {
@@ -27,6 +22,7 @@ public class LongestSequenceTests {
             testSmallBitArray(i, FULLY_SEQUENTIAL, 1);
         }
     }
+
     @Test(timeout = 25000)
     public void testSmallParallel() {
         for (int i = 0; i < NUM_SMALL_TESTS; i++) {
@@ -51,13 +47,12 @@ public class LongestSequenceTests {
             bits[i] = (num >> i) & 1;
             if (bits[i] == match) {
                 conseq++;
-            }
-            else {
+            } else {
                 conseq = 0;
             }
             best = Math.max(best, conseq);
         }
-        int actual = LongestSequence.getLongestSequence(match, bits, cutoff);
+        int actual = GetLongestSequence.getLongestSequence(match, bits, cutoff);
         assertEquals(best, actual);
     }
 
@@ -69,13 +64,12 @@ public class LongestSequenceTests {
             bits[i] = RANDOM.nextBoolean() ? 1 : 0;
             if (bits[i] == match) {
                 conseq++;
-            }
-            else {
+            } else {
                 conseq = 0;
             }
             best = Math.max(best, conseq);
         }
-        int actual = LongestSequence.getLongestSequence(match, bits, cutoff);
+        int actual = GetLongestSequence.getLongestSequence(match, bits, cutoff);
         assertEquals(best, actual);
     }
 }
