@@ -1,4 +1,4 @@
-package longestSequence;
+package getLongestSequence;
 
 public class GetLongestSequence {
     /**

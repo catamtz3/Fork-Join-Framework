@@ -1,4 +1,4 @@
-import longestSequence.GetLongestSequence;
+import getLongestSequence.GetLongestSequence;
 import org.junit.Test;
 
 import java.util.Random;

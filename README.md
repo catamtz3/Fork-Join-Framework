@@ -2,7 +2,7 @@
 
 ## Setting up
 
-Clone this repo, edit it locally, and push and submit to Gradescope, exactly as in P1. You should use Java 11 when
+Clone this repo, edit it locally, and push and submit to Gradescope, exactly as in P1. You should submit it multiple times, in each of the Gradescope assignments. You should use Java 11 when
 working on this.
 
 You should only edit:

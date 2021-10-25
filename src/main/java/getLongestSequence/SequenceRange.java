@@ -1,4 +1,4 @@
-package longestSequence;
+package getLongestSequence;
 
 /**
  * A major part of the challenge here is to figure out what to do with this class.
