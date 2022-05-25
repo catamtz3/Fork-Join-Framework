@@ -27,17 +27,16 @@ public class GetLongestSequence {
         int temp = 0;
         int prev = arr[lo];
         for(int i = lo; i < hi; i++){
-            if(arr[i] == val){
-                temp = 1;
-            } else if (arr[i] == val && arr[i] == prev){
+            if (arr[i] == val && arr[i] == prev){
                 temp++;
+            } else if(arr[i] == val){
+                temp = 1;
             } else {
                 count = Math.max(temp, count);
                 temp = 0;
             }
             prev = arr[i];
         }
-        count = Math.max(temp, count);
         return count;
     }
 
