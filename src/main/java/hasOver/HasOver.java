@@ -1,5 +1,8 @@
 package hasOver;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
+
 public class HasOver {
     /**
      * Use the ForkJoin framework to write the following method in Java.
@@ -11,12 +14,49 @@ public class HasOver {
      * Your code must have O(n) work, O(lg n) span, where n is the length of arr, and actually use the sequentialCutoff
      * argument.
      */
-    public static boolean hasOver(int val, int[] arr, int sequentialCutoff) {
-        /* TODO: Edit this with your code */
-        throw new IllegalStateException();
+
+    private static int CUTOFF;
+    private static final ForkJoinPool POOL = new ForkJoinPool();
+    public static Boolean hasOver(int val, int[] arr, int sequentialCutoff) {
+        CUTOFF = sequentialCutoff;
+        return POOL.invoke(new HasOverTask(arr, 0, arr.length, val));
     }
 
-    /* TODO: Add a sequential method and parallel task here */
+    public static boolean sequential(int[] arr, int lo, int hi, int val){
+        for(int i = lo; i < hi; i++){
+            if (arr[i] >= val){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static class HasOverTask extends RecursiveTask<Boolean> {
+        int[] arr;
+        int val;
+        int lo, hi;
+
+        public HasOverTask(int[] arr, int lo, int hi, int val){
+            this.arr = arr;
+            this.val = val;
+            this.lo = lo;
+            this.hi = hi;
+        }
+
+        @Override
+        protected Boolean compute() {
+            if (hi - lo <= CUTOFF){
+                return sequential(arr, lo, hi, val);
+            }
+            int mid = lo + (hi - lo) / 2;
+            HasOverTask left = new HasOverTask(arr, lo, mid, val);
+            HasOverTask right = new HasOverTask(arr, mid, hi, val);
+            left.fork();
+            boolean rResult = right.compute();
+            boolean lResult = left.join();
+            return lResult || rResult;
+        }
+    }
 
     private static void usage() {
         System.err.println("USAGE: HasOver <number> <array> <sequential cutoff>");

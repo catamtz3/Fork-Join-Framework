@@ -1,5 +1,8 @@
 package getLeftMostIndex;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
+
 public class GetLeftMostIndex {
     /**
      * Use the ForkJoin framework to write the following method in Java.
@@ -14,12 +17,59 @@ public class GetLeftMostIndex {
      * smaller than haystack.length. A solution that peeks across subproblem boundaries to decide partial matches
      * will be significantly cleaner and simpler than one that does not.
      */
+    private static int CUTOFF;
+    private static final ForkJoinPool POOL = new ForkJoinPool();
     public static int getLeftMostIndex(char[] needle, char[] haystack, int sequentialCutoff) {
-        /* TODO: Edit this with your code */
-        throw new IllegalStateException();
+        CUTOFF = sequentialCutoff;
+        return POOL.invoke(new GetLeftMostIndexTask(needle, 0, haystack.length, haystack));
     }
 
-    /* TODO: Add a sequential method and parallel task here */
+    public static int sequential(char[] needle, int lo, int hi, char[] haystack){
+        for(int i = lo; i < hi; i++){
+            if (haystack[i] == needle[0]){
+                for(int j = 0; j < needle.length; j++){
+                    if (i + j >= haystack.length){
+                        return -1;
+                    } else if (needle[j] != haystack[i+j]){
+                        break;
+                    } else if (j == needle.length - 1){
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    private static class GetLeftMostIndexTask extends RecursiveTask<Integer>{
+        char[] needle;
+        char[] haystack;
+        int lo, hi;
+
+        public GetLeftMostIndexTask(char[] needle, int lo, int hi, char[] haystack){
+            this.needle = needle;
+            this.haystack = haystack;
+            this.lo = lo;
+            this.hi = hi;
+        }
+        @Override
+        protected Integer compute() {
+            if (hi-lo <= CUTOFF){
+                return sequential(needle, lo, hi, haystack);
+            }
+            int mid = lo + (hi-lo)/2;
+            GetLeftMostIndexTask left = new GetLeftMostIndexTask(needle, lo, mid, haystack);
+            GetLeftMostIndexTask right = new GetLeftMostIndexTask(needle, mid, hi, haystack);
+            left.fork();
+            int rRes = right.compute();
+            int lRes = left.join();
+            if(lRes != -1 && rRes != -1) {
+                return Math.min(lRes, rRes);
+            }
+            return Math.max(lRes, rRes);
+        }
+    }
+
 
     private static void usage() {
         System.err.println("USAGE: GetLeftMostIndex <needle> <haystack> <sequential cutoff>");
