@@ -24,7 +24,7 @@ public class HasOver {
 
     public static boolean sequential(int[] arr, int lo, int hi, int val){
         for(int i = lo; i < hi; i++){
-            if (arr[i] >= val){
+            if (arr[i] > val){
                 return true;
             }
         }

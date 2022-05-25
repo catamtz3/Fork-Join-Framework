@@ -29,9 +29,7 @@ public class FilterEmpty {
      */
     public static int[] filterEmpty(String[] arr) {
         int[] bits = mapToBitSet(arr);
-
         int[] bitsum = ParallelPrefixSum.parallelPrefixSum(bits);
-
         return mapToOutput(arr, bits, bitsum);
     }
 
