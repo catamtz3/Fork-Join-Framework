@@ -58,10 +58,6 @@ public class GetLongestSequence {
                 return sequential(val, lo, hi, arr);
             }
             int mid = lo + (hi - lo) / 2;
-            if(arr[mid-1] == arr[mid]){
-                GetLongestSequenceTask middle = new GetLongestSequenceTask(val,lo, hi, arr);
-                return middle.compute();
-            }
             GetLongestSequenceTask left = new GetLongestSequenceTask(val, lo, mid, arr);
             GetLongestSequenceTask right = new GetLongestSequenceTask(val, mid, hi, arr);
             left.fork();
