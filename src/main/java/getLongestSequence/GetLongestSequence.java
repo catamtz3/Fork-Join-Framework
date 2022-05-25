@@ -30,6 +30,7 @@ public class GetLongestSequence {
                 temp++;
             }
         }
+        return -1;
     }
 
     private static class GetLongestSequenceTask extends RecursiveTask<Integer>{
@@ -54,6 +55,7 @@ public class GetLongestSequence {
             left.fork();
             int rResult = right.compute();
             int lResult = left.join();
+            return lResult;
         }
     }
 //    public static boolean sequential(int[] arr, int lo, int hi, int val){
