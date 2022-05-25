@@ -71,20 +71,26 @@ public class GetLongestSequence {
                     }
                     prev = arr[i];
                 }
-                count = Math.max(temp, count);
+                count = getMax(temp, count);
                 return count;
             } else {
                 int mid = lo + (hi - lo) / 2;
                 if(arr[mid-1] == arr[mid]){
                     GetLongestSequenceTask midd = new GetLongestSequenceTask(val, lo, hi, arr, arr.length+1);
+                    return midd.compute();
                 }
                 GetLongestSequenceTask left = new GetLongestSequenceTask(val, lo, mid, arr, seqCut);
                 GetLongestSequenceTask right = new GetLongestSequenceTask(val, mid, hi, arr, seqCut);
                 left.fork();
                 int rResult = right.compute();
                 int lResult = left.join();
-                return Math.max(lResult, rResult);
+                return getMax(lResult, rResult);
             }
+        }
+        private int getMax(int a, int b) {
+            if(a > b)
+                return a;
+            return b;
         }
     }
 
