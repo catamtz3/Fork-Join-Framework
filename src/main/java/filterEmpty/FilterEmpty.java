@@ -72,7 +72,7 @@ public class FilterEmpty {
 
     public static int[] mapToOutput(String[] input, int[] bits, int[] bitsum) {
         int[] res = new int[bitsum.length > 0 ? bitsum[bits.length-1] : 0];
-        POOL.invoke(new Outcome(res, input, bitsum, input.length, 1, ));
+        POOL.invoke(new Outcome(res, input, bitsum, 0, input.length, 1));
         return res;
     }
 
