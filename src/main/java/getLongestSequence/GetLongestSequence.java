@@ -25,12 +25,18 @@ public class GetLongestSequence {
     public static int sequential(int val, int lo, int hi, int[] arr){
         int count = 0;
         int temp = 0;
+        int mover = 0;
         for(int i = lo; i < hi; i++){
             if(arr[i] == val){
+                temp = 1;
+            } else if (arr[i] == val && arr[i] == arr[i-1]){
                 temp++;
+            } else {
+                count = Math.max(temp, count);
+                temp = 0;
             }
         }
-        return -1;
+        return count;
     }
 
     private static class GetLongestSequenceTask extends RecursiveTask<Integer>{
@@ -55,44 +61,9 @@ public class GetLongestSequence {
             left.fork();
             int rResult = right.compute();
             int lResult = left.join();
-            return lResult;
+            return Math.max(lResult, rResult);
         }
     }
-//    public static boolean sequential(int[] arr, int lo, int hi, int val){
-//        for(int i = lo; i < hi; i++){
-//            if (arr[i] >= val){
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    private static class HasOverTask extends RecursiveTask<Boolean> {
-//        int[] arr;
-//        int val;
-//        int lo, hi;
-//
-//        public HasOverTask(int[] arr, int lo, int hi, int val){
-//            this.arr = arr;
-//            this.val = val;
-//            this.lo = lo;
-//            this.hi = hi;
-//        }
-//
-//        @Override
-//        protected Boolean compute() {
-//            if (hi - lo <= CUTOFF){
-//                return sequential(arr, lo, hi, val);
-//            }
-//            int mid = lo + (hi - lo) / 2;
-//            HasOverTask left = new HasOverTask(arr, lo, mid, val);
-//            HasOverTask right = new HasOverTask(arr, mid, hi, val);
-//            left.fork();
-//            boolean rResult = right.compute();
-//            boolean lResult = left.join();
-//            return lResult || rResult;
-//        }
-//    }
 
     private static void usage() {
         System.err.println("USAGE: GetLongestSequence <number> <array> <sequential cutoff>");
