@@ -15,31 +15,31 @@ public class GetLongestSequence {
      * argument. We have provided you with an extra class SequenceRange. We recommend you use this class as
      * your return value, but this is not required.
      */
-//    private static int CUTOFF;
+    private static int CUTOFF;
     private static final ForkJoinPool POOL = new ForkJoinPool();
     public static int getLongestSequence(int val, int[] arr, int sequentialCutoff) {
-//        CUTOFF = sequentialCutoff;
+        CUTOFF = sequentialCutoff;
         return POOL.invoke(new GetLongestSequenceTask(val, 0, arr.length, arr, sequentialCutoff));
     }
 
-//    public static int sequential(int val, int lo, int hi, int[] arr){
-//        int count = 0;
-//        int temp = 0;
-//        int prev = arr[lo];
-//        for(int i = lo; i < hi; i++){
-//            if (arr[i] == val && arr[i] == prev){
-//                temp++;
-//            } else if(arr[i] == val){
-//                temp = 1;
-//            } else {
-//                count = Math.max(temp, count);
-//                temp = 0;
-//            }
-//            prev = arr[i];
-//        }
-//        count = Math.max(temp, count);
-//        return count;
-//    }
+    public static int sequential(int val, int lo, int hi, int[] arr, int CUTOFF){
+        int count = 0;
+        int temp = 0;
+        int prev = arr[lo];
+        for(int i = lo; i < hi; i++){
+            if (arr[i] == val && arr[i] == prev){
+                temp++;
+            } else if(arr[i] == val){
+                temp = 1;
+            } else {
+                count = Math.max(temp, count);
+                temp = 0;
+            }
+            prev = arr[i];
+        }
+        count = Math.max(temp, count);
+        return count;
+    }
 
     private static class GetLongestSequenceTask extends RecursiveTask<Integer>{
         int[] arr;
@@ -57,22 +57,7 @@ public class GetLongestSequence {
         @Override
         protected Integer compute() {
             if (hi - lo <= seqCut){
-                int count = 0;
-                int temp = 0;
-                int prev = arr[lo];
-                for(int i = lo; i < hi; i++){
-                    if (arr[i] == val && arr[i] == prev){
-                        temp++;
-                    } else if(arr[i] == val){
-                        temp = 1;
-                    } else {
-                        count = Math.max(temp, count);
-                        temp = 0;
-                    }
-                    prev = arr[i];
-                }
-                count = getMax(temp, count);
-                return count;
+                return sequential(val, lo, hi, arr, CUTOFF);
             } else {
                 int mid = lo + (hi - lo) / 2;
                 if(arr[mid-1] == arr[mid]){
@@ -84,15 +69,9 @@ public class GetLongestSequence {
                 left.fork();
                 int rResult = right.compute();
                 int lResult = left.join();
-                return getMax(lResult, rResult);
+                return Math.max(lResult, rResult);
             }
         }
-        private int getMax(int a, int b) {
-            if(a > b)
-                return a;
-            return b;
-        }
-    }
 
     private static void usage() {
         System.err.println("USAGE: GetLongestSequence <number> <array> <sequential cutoff>");
