@@ -1,7 +1,10 @@
 package filterEmpty;
 
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.RecursiveTask;
 
 public class FilterEmpty {
     static ForkJoinPool POOL = new ForkJoinPool();
@@ -33,18 +36,79 @@ public class FilterEmpty {
     }
 
     public static int[] mapToBitSet(String[] arr) {
-        /* TODO: Edit this with your code */
-        throw new IllegalStateException();
+        int[] set = new int[arr.length];
+        POOL.invoke(new BitSet(set, arr, 0, set.length, 1));
+        return set;
     }
 
-    /* TODO: Add a sequential method and parallel task here */
+    public static class BitSet extends RecursiveAction{
+        int[] set;
+        int lo, hi, cutOff;
+        String[] arr;
+
+        public BitSet(int[] set, String[] arr, int lo, int hi, int cutOff){
+            this.set = set;
+            this.lo = lo;
+            this.hi = hi;
+            this.cutOff = cutOff;
+            this.arr = arr;
+        }
+
+        public void compute(){
+            if(hi - lo >  cutOff){
+                int mid = lo + (hi-lo) / 2;
+                BitSet left = new BitSet(set, arr, lo, mid, cutOff);
+                BitSet right = new BitSet(set, arr, mid, hi, cutOff);
+                right.fork();
+                left.compute();
+                right.join();
+            } else {
+                for(int i = lo; i < hi; i++){
+                    set[i] = (arr[i].isEmpty() || arr[i] == null) ? 0 : 1;
+                }
+            }
+        }
+    }
 
     public static int[] mapToOutput(String[] input, int[] bits, int[] bitsum) {
-        /* TODO: Edit this with your code */
-        throw new IllegalStateException();
+        int[] res = new int[bitsum.length > 0 ? bitsum[bits.length-1] : 0];
+        POOL.invoke(new Outcome(res, input, bitsum, input.length, 1, ));
+        return res;
     }
 
-    /* TODO: Add a sequential method and parallel task here */
+    public static class Outcome extends RecursiveAction{
+        String[] arr;
+        int[] set;
+        int[] bitsum;
+        int lo, hi, cutOff;
+
+        public Outcome(int[] tempSet, String[] arr, int[] bitsum, int lo, int hi, int cutOff){
+            this.set = tempSet;
+            this.arr = arr;
+            this.bitsum = bitsum;
+            this.lo = lo;
+            this.hi = hi;
+            this.cutOff = cutOff;
+        }
+
+        @Override
+        protected void compute() {
+            if(hi-lo > cutOff){
+                int mid = (hi - lo) / 2 + lo;
+                Outcome left = new Outcome(set, arr, bitsum, lo, mid, cutOff);
+                Outcome right = new Outcome(set, arr, bitsum, mid, hi, cutOff);
+                right.fork();
+                left.compute();
+                right.join();
+            } else {
+                for(int i = lo; i < hi; i++){
+                    if((i > 0 ? bitsum[i - 1] : 0) < bitsum[i]){
+                        set[bitsum[i]-1] = arr[i].length();
+                    }
+                }
+            }
+        }
+    }
 
     private static void usage() {
         System.err.println("USAGE: FilterEmpty <String array>");
