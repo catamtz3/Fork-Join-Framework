@@ -37,7 +37,6 @@ public class GetLongestSequence {
             }
             prev = arr[i];
         }
-        count = Math.max(temp, count);
         return count;
     }
 

@@ -29,8 +29,8 @@ public class FilterEmpty {
      */
     public static int[] filterEmpty(String[] arr) {
         int[] bits = mapToBitSet(arr);
-        int[] bitsum = ParallelPrefixSum.parallelPrefixSum(bits);
-        return mapToOutput(arr, bits, bitsum);
+        int[] bitsadd = ParallelPrefixSum.parallelPrefixSum(bits);
+        return mapToOutput(arr, bits, bitsadd);
     }
 
     public static int[] mapToBitSet(String[] arr) {
@@ -55,11 +55,11 @@ public class FilterEmpty {
         public void compute(){
             if(hi - lo >  cutOff){
                 int mid = lo + (hi-lo) / 2;
-                BitSet left = new BitSet(set, arr, lo, mid, cutOff);
-                BitSet right = new BitSet(set, arr, mid, hi, cutOff);
-                right.fork();
-                left.compute();
-                right.join();
+                BitSet l = new BitSet(set, arr, lo, mid, cutOff);
+                BitSet r = new BitSet(set, arr, mid, hi, cutOff);
+                r.fork();
+                l.compute();
+                r.join();
             } else {
                 for(int i = lo; i < hi; i++){
                     set[i] = (arr[i].isEmpty() || arr[i] == null) ? 0 : 1;
@@ -68,22 +68,22 @@ public class FilterEmpty {
         }
     }
 
-    public static int[] mapToOutput(String[] input, int[] bits, int[] bitsum) {
-        int[] res = new int[bitsum.length > 0 ? bitsum[bits.length-1] : 0];
-        POOL.invoke(new Outcome(res, input, bitsum, 0, input.length, 1));
+    public static int[] mapToOutput(String[] input, int[] bits, int[] bitsadd) {
+        int[] res = new int[bitsadd.length > 0 ? bitsadd[bits.length-1] : 0];
+        POOL.invoke(new Finish(res, input, bitsadd, 0, input.length, 1));
         return res;
     }
 
-    public static class Outcome extends RecursiveAction{
+    public static class Finish extends RecursiveAction{
         String[] arr;
         int[] set;
-        int[] bitsum;
+        int[] bitsadd;
         int lo, hi, cutOff;
 
-        public Outcome(int[] tempSet, String[] arr, int[] bitsum, int lo, int hi, int cutOff){
+        public Finish(int[] tempSet, String[] arr, int[] bitsum, int lo, int hi, int cutOff){
             this.set = tempSet;
             this.arr = arr;
-            this.bitsum = bitsum;
+            this.bitsadd = bitsum;
             this.lo = lo;
             this.hi = hi;
             this.cutOff = cutOff;
@@ -93,15 +93,15 @@ public class FilterEmpty {
         protected void compute() {
             if(hi-lo > cutOff){
                 int mid = (hi - lo) / 2 + lo;
-                Outcome left = new Outcome(set, arr, bitsum, lo, mid, cutOff);
-                Outcome right = new Outcome(set, arr, bitsum, mid, hi, cutOff);
+                Finish left = new Finish(set, arr, bitsadd, lo, mid, cutOff);
+                Finish right = new Finish(set, arr, bitsadd, mid, hi, cutOff);
                 right.fork();
                 left.compute();
                 right.join();
             } else {
                 for(int i = lo; i < hi; i++){
-                    if((i > 0 ? bitsum[i - 1] : 0) < bitsum[i]){
-                        set[bitsum[i]-1] = arr[i].length();
+                    if((i > 0 ? bitsadd[i - 1] : 0) < bitsadd[i]){
+                        set[bitsadd[i]-1] = arr[i].length();
                     }
                 }
             }
