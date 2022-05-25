@@ -61,7 +61,7 @@ public class GetLongestSequence {
             } else {
                 int mid = lo + (hi - lo) / 2;
                 if (arr[mid - 1] == arr[mid]) {
-                    GetLongestSequenceTask midd = new GetLongestSequenceTask(val, lo, hi, arr, arr.length + 1);
+                    GetLongestSequenceTask midd = new GetLongestSequenceTask(val, lo, mid+10, arr, arr.length + 1);
                     return midd.compute();
                 }
                 GetLongestSequenceTask left = new GetLongestSequenceTask(val, lo, mid, arr, seqCut);
