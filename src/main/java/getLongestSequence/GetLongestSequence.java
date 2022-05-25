@@ -15,55 +15,76 @@ public class GetLongestSequence {
      * argument. We have provided you with an extra class SequenceRange. We recommend you use this class as
      * your return value, but this is not required.
      */
-    private static int CUTOFF;
+//    private static int CUTOFF;
     private static final ForkJoinPool POOL = new ForkJoinPool();
     public static int getLongestSequence(int val, int[] arr, int sequentialCutoff) {
-        CUTOFF = sequentialCutoff;
-        return POOL.invoke(new GetLongestSequenceTask(val, 0, arr.length, arr));
+//        CUTOFF = sequentialCutoff;
+        return POOL.invoke(new GetLongestSequenceTask(val, 0, arr.length, arr, sequentialCutoff));
     }
 
-    public static int sequential(int val, int lo, int hi, int[] arr){
-        int count = 0;
-        int temp = 0;
-        int prev = arr[lo];
-        for(int i = lo; i < hi; i++){
-            if (arr[i] == val && arr[i] == prev){
-                temp++;
-            } else if(arr[i] == val){
-                temp = 1;
-            } else {
-                count = Math.max(temp, count);
-                temp = 0;
-            }
-            prev = arr[i];
-        }
-        count = Math.max(temp, count);
-        return count;
-    }
+//    public static int sequential(int val, int lo, int hi, int[] arr){
+//        int count = 0;
+//        int temp = 0;
+//        int prev = arr[lo];
+//        for(int i = lo; i < hi; i++){
+//            if (arr[i] == val && arr[i] == prev){
+//                temp++;
+//            } else if(arr[i] == val){
+//                temp = 1;
+//            } else {
+//                count = Math.max(temp, count);
+//                temp = 0;
+//            }
+//            prev = arr[i];
+//        }
+//        count = Math.max(temp, count);
+//        return count;
+//    }
 
     private static class GetLongestSequenceTask extends RecursiveTask<Integer>{
         int[] arr;
         int lo, hi;
         int val;
+        int seqCut;
 
-        public GetLongestSequenceTask(int val, int lo, int hi, int[] arr){
+        public GetLongestSequenceTask(int val, int lo, int hi, int[] arr, int seqCut){
             this.arr = arr;
             this.lo = lo;
             this.hi = hi;
             this.val = val;
+            this.seqCut = seqCut;
         }
         @Override
         protected Integer compute() {
-            if (hi - lo <= CUTOFF){
-                return sequential(val, lo, hi, arr);
+            if (hi - lo <= seqCut){
+                int count = 0;
+                int temp = 0;
+                int prev = arr[lo];
+                for(int i = lo; i < hi; i++){
+                    if (arr[i] == val && arr[i] == prev){
+                        temp++;
+                    } else if(arr[i] == val){
+                        temp = 1;
+                    } else {
+                        count = Math.max(temp, count);
+                        temp = 0;
+                    }
+                    prev = arr[i];
+                }
+                count = Math.max(temp, count);
+                return count;
+            } else {
+                int mid = lo + (hi - lo) / 2;
+                if(arr[mid-1] == arr[mid]){
+                    GetLongestSequenceTask midd = new GetLongestSequenceTask(val, lo, hi, arr, arr.length+1);
+                }
+                GetLongestSequenceTask left = new GetLongestSequenceTask(val, lo, mid, arr, seqCut);
+                GetLongestSequenceTask right = new GetLongestSequenceTask(val, mid, hi, arr, seqCut);
+                left.fork();
+                int rResult = right.compute();
+                int lResult = left.join();
+                return Math.max(lResult, rResult);
             }
-            int mid = lo + (hi - lo) / 2;
-            GetLongestSequenceTask left = new GetLongestSequenceTask(val, lo, mid, arr);
-            GetLongestSequenceTask right = new GetLongestSequenceTask(val, mid, hi, arr);
-            left.fork();
-            int rResult = right.compute();
-            int lResult = left.join();
-            return Math.max(lResult, rResult);
         }
     }
 
