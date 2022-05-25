@@ -41,27 +41,28 @@ public class GetLongestSequence {
         return count;
     }
 
-    private static class GetLongestSequenceTask extends RecursiveTask<Integer>{
+    private static class GetLongestSequenceTask extends RecursiveTask<Integer> {
         int[] arr;
         int lo, hi;
         int val;
         int seqCut;
 
-        public GetLongestSequenceTask(int val, int lo, int hi, int[] arr, int seqCut){
+        public GetLongestSequenceTask(int val, int lo, int hi, int[] arr, int seqCut) {
             this.arr = arr;
             this.lo = lo;
             this.hi = hi;
             this.val = val;
             this.seqCut = seqCut;
         }
+
         @Override
         protected Integer compute() {
-            if (hi - lo <= seqCut){
+            if (hi - lo <= seqCut) {
                 return sequential(val, lo, hi, arr, CUTOFF);
             } else {
                 int mid = lo + (hi - lo) / 2;
-                if(arr[mid-1] == arr[mid]){
-                    GetLongestSequenceTask midd = new GetLongestSequenceTask(val, lo, hi, arr, arr.length+1);
+                if (arr[mid - 1] == arr[mid]) {
+                    GetLongestSequenceTask midd = new GetLongestSequenceTask(val, lo, hi, arr, arr.length + 1);
                     return midd.compute();
                 }
                 GetLongestSequenceTask left = new GetLongestSequenceTask(val, lo, mid, arr, seqCut);
@@ -73,29 +74,30 @@ public class GetLongestSequence {
             }
         }
 
-    private static void usage() {
-        System.err.println("USAGE: GetLongestSequence <number> <array> <sequential cutoff>");
-        System.exit(2);
-    }
-
-    public static void main(String[] args) {
-        if (args.length != 3) {
-            usage();
+        private static void usage() {
+            System.err.println("USAGE: GetLongestSequence <number> <array> <sequential cutoff>");
+            System.exit(2);
         }
 
-        int val = 0;
-        int[] arr = null;
-
-        try {
-            val = Integer.parseInt(args[0]);
-            String[] stringArr = args[1].replaceAll("\\s*", "").split(",");
-            arr = new int[stringArr.length];
-            for (int i = 0; i < stringArr.length; i++) {
-                arr[i] = Integer.parseInt(stringArr[i]);
+        public static void main(String[] args) {
+            if (args.length != 3) {
+                usage();
             }
-            System.out.println(getLongestSequence(val, arr, Integer.parseInt(args[2])));
-        } catch (NumberFormatException e) {
-            usage();
+
+            int val = 0;
+            int[] arr = null;
+
+            try {
+                val = Integer.parseInt(args[0]);
+                String[] stringArr = args[1].replaceAll("\\s*", "").split(",");
+                arr = new int[stringArr.length];
+                for (int i = 0; i < stringArr.length; i++) {
+                    arr[i] = Integer.parseInt(stringArr[i]);
+                }
+                System.out.println(getLongestSequence(val, arr, Integer.parseInt(args[2])));
+            } catch (NumberFormatException e) {
+                usage();
+            }
         }
     }
 }
